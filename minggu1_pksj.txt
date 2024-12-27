@@ -1,0 +1,1 @@
+Dapat memulai dengan mempelajari terlebih dahul dengan topik "Mengintegrasikan DNSSEC untuk keamanan DNS". Kami merangkum tentang pembahasan terkait konsep DNS dan DNSSEC, dimana dari konsep tersebut. Kami mendapatkan rangkuman yang nantinya akan memudahkan dalam mengerjakan progress ke 2

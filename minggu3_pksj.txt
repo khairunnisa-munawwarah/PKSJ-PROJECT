@@ -1,0 +1,69 @@
+Membuat file zona DNS dengan tanda tangan digital menggunakan DNSSEC, tahap-tahapnya sebagai berikut:
+
+cd /etc/bind
+sudo nano /etc/bind/db.pksj.com (db.pksj.com merupakan nama file zona)
+(saat file db.pksj.com berhasil terbuka selanjutnya edit file untuk memasukkan zona domain)
+$TTL 86400
+
+@ IN SOA ns.pksj.com. admin.ksj.com. (
+	2024121201 ; Serial
+	3600	; Refresh
+	1800	; Retry
+	604800	; Expire
+	86400	; Minimum TTL
+	)
+; DNS Servers
+@ IN NS ns.pksj.com.
+
+; A Records
+ns  IN A 192.168.1.1
+www IN A 192.168.1.2
+
+sudo nano /etc/bind/named.conf.local(menambahkan zona)
+zone "pksj.com"{
+	type master;
+	file "/etc/bind/db.pksj.com";
+	};
+	
+sudo named-checkzone pksj.com /etc/bind/db.pksj.com
+
+membuat dua kunci DNSSEC yaitu KSK dan ZSK
+sudo dnssec-keygen -a RSASHA256 -b 2048 -n ZONE -f KSK pksj.com
+sudo dnssec-keygen -a RSASHA256 -b 1024 -n ZONE pksj.com
+
+sudo named-checkzone pksj.com /etc/bin/db.pksj.com
+(masukkan kunci DNSSEC yang telah didapatkan kedalam file db.pksj.com)
+$TTL 86400 
+$INCLUDE Kpksj.com.+008+12181.key
+$INCLUDE Kpksj.com.+008+65238.key
+@ IN SOA ns.pksj.com. admin.ksj.com. (
+	2024121201	; Serial
+	3600		; Refresh
+	1800 		; Retry
+	604800 		; Expire
+	86400		; Minimum TTL
+	)
+; DNS Servers
+@ IN NS ns.pksj.com.
+
+; A Records
+ns  IN A 192.168.1.1
+www IN A 192.168.1.2
+
+sudo named-checkzone pksj.com /etc/bind/db.pksj.com 
+(dengan hasil sebagai berikut)
+zone pksj.com/IN: loaded serial 2024121201
+
+sudo dnssec-signzone -o pksj.com -k Kpksj.com+008+12181 db.
+(nama file yang sudah ditandatangani akan memiliki nama db.pksj.com.signed)
+
+sudo nano /etc/bind/named.conf.local(mengganti zona dengan yang telah ditandatangani)
+zone "pksj.com"{
+	type master;
+	file "/etc/bind/db.pksj.com.signed";
+	};
+	
+sudo systemctl status bind9
+dig @localhost pksj.com DNSKEY +dnssec
+(pengecekan isi file DNSSEC yang suddah ditandatangani)
+sudo nano /etc/bind/db.pksj.com.signed
