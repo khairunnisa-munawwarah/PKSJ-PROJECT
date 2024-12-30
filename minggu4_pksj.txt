@@ -27,4 +27,4 @@ dig +dnssec pksj.com
 sudo tail -f /var/log/syslog
 
 (melakukan perbandingan pada serangan DNS Spoofing saat DNSSEC aktif dan DNSSEC non-aktif)
-(Perbedaan serangan dns spoofing saat dnsssec aktif setelah mengirimkan script yang dikirimkan akan memberikan respon bahwa script yang dikirimkan berhasil dan serangan dns spoofing saat dnssec non-aktif akan memberikan respon warning).
+(Perbedaan serangan dns spoofing saat dnsssec aktif setelah mengirimkan script yang dikirimkan akan memberikan respon bahwa script yang dikirimkan gagal mengirimkan paket palsu dan serangan dns spoofing saat dnssec non-aktif akan memberikan respon paket palsu berhasil di kirimkan).
